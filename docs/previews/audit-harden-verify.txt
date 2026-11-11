@@ -1,0 +1,57 @@
+$ ./target/release/thoxshield --version
+thoxshield 0.1.2
+
+$ ./target/release/thoxshield --help
+thoxshield 0.1.2 — THOX light counter-REA audit + shield (Rust, zero deps)
+
+USAGE:
+  thoxshield audit    <path> [--json]
+  thoxshield harden   <path> --out <dir> [--max-add-pct <n>]
+  thoxshield verify   <original> <hardened>
+  thoxshield manifest <path>
+  thoxshield team     <path> --out <dir> [--loops <n>]   agent-team loop: audit -> harden -> verify -> report
+
+Defensive use only, on artifacts you own or are authorized to modify.
+
+$ ./target/release/thoxshield audit fixtures
+thoxshield audit — 3 artifact(s) under fixtures
+  core.wasm                                    wasm                       31 B  sha256:0b8f844f0a61…  unsealed (lite-hardenable)
+  model.gguf                                   model-gguf                240 B  sha256:30f1514d910f…  unsealed (lite-hardenable)
+  model.safetensors                            model-safetensors         202 B  sha256:b21833dc4725…  unsealed (lite-hardenable)
+formats: model-gguf=1  model-safetensors=1  wasm=1
+lint findings: 0
+
+$ ./target/release/thoxshield harden fixtures --out shielded
+  ok    core.wasm                                wasm  31 B -> 334 B (+303 B, +977.42%)
+  ok    model.gguf                               model-gguf  240 B -> 976 B (+736 B, +306.67%)
+  ok    model.safetensors                        model-safetensors  202 B -> 802 B (+600 B, +297.03%)
+thoxshield harden: 3 hardened, 0 already sealed, 0 skipped (audit-only), 0 failed -> shielded
+
+$ ./target/release/thoxshield verify fixtures/model.gguf shielded/model.gguf
+  PASS tensor count unchanged
+  PASS all original metadata keys preserved, in order
+  PASS lite nesting breaker present
+  PASS tensor-info records identical
+  PASS tensor data section bytes identical
+  PASS tensor data start aligned in both files
+thoxshield verify: OK (240 -> 976 B)
+exit=0
+
+$ ./target/release/thoxshield verify fixtures/core.wasm shielded/core.wasm
+  PASS original bytes preserved as prefix (custom section appended only)
+  PASS lite seal present
+thoxshield verify: OK (31 -> 334 B)
+exit=0
+
+$ ./target/release/thoxshield verify fixtures/model.safetensors shielded/model.safetensors
+  PASS tensor payload bytes identical
+  PASS original header keys preserved
+thoxshield verify: OK (202 -> 802 B)
+exit=0
+
+$ ./target/release/thoxshield manifest shielded
+{"tool":"thoxshield","version":"0.1.2","root":"shielded","artifacts":[
+  {"path":"shielded/core.wasm","format":"wasm","bytes":334,"sha256":"44dad7b7099086f22ba16198464080dc469595f20a750fefc5b02e8195c94672"},
+  {"path":"shielded/model.gguf","format":"model-gguf","bytes":976,"sha256":"6e0fb641a5e5be50edaf2c1303e6d22bd94fe7c415c6561712220463431ff4f6"},
+  {"path":"shielded/model.safetensors","format":"model-safetensors","bytes":802,"sha256":"0037f384afe99ada87d6e0a6cda788ffd80e0182ed3d11b540c6b2a8c82f799e"}
+]}

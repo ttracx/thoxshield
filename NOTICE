@@ -1,0 +1,19 @@
+NOTICE
+
+ThoxShield
+Copyright (c) 2026 THOX.ai LLC and ThoxShield contributors. MIT License (see LICENSE).
+
+Concept and research credit
+---------------------------
+ThoxShield builds on the counter-REA (counter reverse-engineering-agent)
+concept and the published analyzer-budget research of BLA — Blind LLM
+Agents (bla-agents), https://github.com/qybaihe/bla, Copyright (c) 2026
+BLA Contributors, MIT License. The format list and magic-byte table in
+src/detect.rs follow BLA's published format coverage. All other code in
+this repository is an original Rust implementation written for ThoxShield;
+no BLA source code is included.
+
+Trademark note
+--------------
+THOX, ThoxShield, and "Your AI. Your Data. Your Rules." are trademarks of
+THOX.ai LLC. The MIT License grants no trademark rights.

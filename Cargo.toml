@@ -1,0 +1,13 @@
+[package]
+name = "thoxshield"
+version = "0.1.2"
+edition = "2021"
+description = "ThoxShield by THOX.ai: zero-dependency Rust audit, light shield, and agent-team loop harness for GGUF, Safetensors and WASM release artifacts. Bloat-capped counter-REA defense for your own software. Counter-REA concept credited to BLA (MIT, qybaihe/bla); see NOTICE."
+license = "MIT"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

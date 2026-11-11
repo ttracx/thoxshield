@@ -1,0 +1,78 @@
+$ ./target/release/thoxshield team fixtures --out teamrun
+thoxshield team: SUCCESS after 1 loop(s) — all hardenable artifacts verified
+  report: teamrun/team-report.json
+  log:    teamrun/team-log.md
+  shields: teamrun/hardened
+exit=0
+
+$ ls -l teamrun
+audit-loop1.json
+hardened/
+team-log.md
+team-report.json
+team-state.json
+
+$ cat teamrun/team-report.json
+{
+  "tool": "thoxshield-team", "version": "0.1.2",
+  "target": "fixtures", "loops_run": 1, "success": true, "stop_reason": "all hardenable artifacts verified",
+  "started_unix_ms": 1794440976335, "ended_unix_ms": 1794440976341,
+  "artifacts": [
+    {"path": "core.wasm", "format": "wasm", "hardenable": true, "lint_blocked": false, "hardened": true, "verified": true, "note": ""},
+    {"path": "model.gguf", "format": "model-gguf", "hardenable": true, "lint_blocked": false, "hardened": true, "verified": true, "note": ""},
+    {"path": "model.safetensors", "format": "model-safetensors", "hardenable": true, "lint_blocked": false, "hardened": true, "verified": true, "note": ""}
+  ]
+}
+
+$ cat teamrun/team-log.md
+# ThoxShield team loop log
+
+Target: `fixtures`
+Started (unix ms): 1794440976335
+
+## Loop 1
+
+- auditor: 3 artifact(s) inventoried
+- hardener: ok (3 artifact(s) shielded)
+- verifier: ALL VERIFIED
+
+## Result: SUCCESS — all hardenable artifacts verified
+
+$ cat teamrun/team-state.json
+{"loop": 1, "started_unix_ms": 1794440976335, "artifacts": [{"path": "core.wasm", "hardened": true, "verified": true},{"path": "model.gguf", "hardened": true, "verified": true},{"path": "model.safetensors", "hardened": true, "verified": true}]}
+
+---
+
+The second stop condition, on a tree carrying a plaintext key and a PEM header:
+
+$ ./target/release/thoxshield audit linttree
+thoxshield audit — 1 artifact(s) under linttree
+  leak.txt                                     unknown                    49 B  sha256:78a2cd223d93…
+      ! secret-lint: PEM private key ('-----BEGIN PRIVATE KEY-----')
+      ! secret-lint: possible AWS access key id prefix ('AKIA')
+formats: unknown=1
+lint findings: 2
+
+$ ./target/release/thoxshield team linttree --out lintteam
+thoxshield team: STOPPED after 1 loop(s) — blocked by lint on 1 artifact(s): leak.txt
+  report: lintteam/team-report.json
+  log:    lintteam/team-log.md
+  shields: lintteam/hardened
+thoxshield: blocked by lint on 1 artifact(s): leak.txt        [stderr]
+exit=1
+
+$ cat lintteam/team-log.md
+# ThoxShield team loop log
+
+Target: `linttree`
+Started (unix ms): 1794440994235
+
+## Loop 1
+
+- auditor: 1 artifact(s) inventoried
+- coordinator: STOP — blocked by lint on 1 artifact(s): leak.txt
+
+## Result: STOPPED — blocked by lint on 1 artifact(s): leak.txt
+
+A lint stop is a failure exit, on purpose: shipping a secret is not a shielding
+problem and CI must not treat the run as a pass.
