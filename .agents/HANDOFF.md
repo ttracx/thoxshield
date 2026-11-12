@@ -38,6 +38,25 @@ Defect found and fixed in this release cycle: `const VERSION` was hardcoded to
 `0.1.0`, so a 0.1.2 build reported the wrong version in `--version`, `audit`
 JSON and `team-report.json`. Now `env!("CARGO_PKG_VERSION")`.
 
+## Binary provenance (read before quoting a hash)
+
+The paper v1.1.2 measures the v0.1.2 build it was written against:
+**486,808 bytes, SHA-256 `34592b6d1f13e40849…`** (see
+`exp/results/summary.json` → `thoxshield_v0_1_2`). The binary attached to the
+GitHub release v0.1.2 is **488,072 bytes, SHA-256
+`1a53a617c3a80c7c724885c43f43b3373e0aabcbc8b98648ad97556c28ff1abe`**.
+
+They are not byte-identical, on purpose and by chronology: this release was
+built from the same v0.1.2 source after two pre-release changes that the paper's
+recorded build predates — the `CARGO_PKG_VERSION` fix and 17 mechanical clippy
+fixes under rustc 1.99. Hardened output is unaffected: the three fixture
+artifacts harden to the same three SHA-256 values before and after those
+changes, which is how the refactor was proven behavior-preserving.
+
+So: quote `34592b6d…` when citing the paper's measurements, and `1a53a617…`
+when verifying the release download. Do not present them as the same build.
+
+
 ## Known limitations (do not soften)
 
 A ~60-line stripper written from the public format specs removes every shield
