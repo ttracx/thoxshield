@@ -84,3 +84,17 @@ MIT — see [LICENSE](LICENSE). The counter-REA concept and the format-budget re
 Governance: THOX.ai LLC maintains this repository. Defensive use only, on artifacts you own or are authorized to modify. Contributions adding offensive capability, prompt-injection layers, or fake legal notices are out of scope. A full legal block is carried in [NOTICE](NOTICE): © 2026 THOX.ai LLC. All rights reserved, subject to applicable licenses. THOX.ai™ and THOX product names and logos are trademarks of THOX.ai LLC. Other marks belong to their respective owners.
 
 Your AI. Your Data. Your Rules.™
+
+---
+
+## Legal
+
+Copyright (c) 2024-2026 THOX.ai LLC. All rights reserved.
+
+**THOX.ai LLC**
+- CTO: Tommy Xaypanya
+- CEO: Craig Ross
+
+Licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+Unauthorized copying, modification, merger, publication, distribution, sublicensing, and/or selling of this software, via any medium, is strictly prohibited without prior written consent from THOX.ai LLC.
